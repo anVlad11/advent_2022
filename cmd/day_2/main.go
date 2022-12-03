@@ -33,6 +33,12 @@ func do() error {
 	return nil
 }
 
+/**
+A - X - Rock
+B - Y - Paper
+C - Z - Scissors
+*/
+
 func part1(file []string) error {
 	if len(file) == 0 {
 		return nil
@@ -40,7 +46,7 @@ func part1(file []string) error {
 
 	equals := map[byte]byte{'A': 'X', 'B': 'Y', 'C': 'Z'}
 	// A is beaten by Y, B is beaten by Z, C is beaten by X
-	rules := map[byte]byte{'A': 'Y', 'B': 'Z', 'C': 'X'}
+	isBeatenBy := map[byte]byte{'A': 'Y', 'B': 'Z', 'C': 'X'}
 	cost := map[byte]int{'X': 1, 'Y': 2, 'Z': 3}
 
 	score := 0
@@ -51,7 +57,7 @@ func part1(file []string) error {
 		roundScore := cost[line[2]]
 		if equals[line[0]] == line[2] {
 			roundScore += 3
-		} else if rules[line[0]] == line[2] {
+		} else if isBeatenBy[line[0]] == line[2] {
 			roundScore += 6
 		}
 		score += roundScore
@@ -63,11 +69,35 @@ func part1(file []string) error {
 }
 
 func part2(file []string) error {
-	//var err error
 
-	if len(file) == 0 {
-		return nil
+	equals := map[byte]byte{'A': 'X', 'B': 'Y', 'C': 'Z'}
+	// A is beaten by Y, B is beaten by Z, C is beaten by X
+	isBeatenBy := map[byte]byte{'A': 'Y', 'B': 'Z', 'C': 'X'}
+	// A beats Z, B beats X, C beats Y
+	beats := map[byte]byte{'A': 'Z', 'B': 'X', 'C': 'Y'}
+
+	letterCost := map[byte]int{'X': 1, 'Y': 2, 'Z': 3}
+	resultCost := map[byte]int{'X': 0, 'Y': 3, 'Z': 6}
+
+	solution := map[byte]map[byte]byte{
+		'X': beats,
+		'Y': equals,
+		'Z': isBeatenBy,
 	}
+
+	score := 0
+	for _, line := range file {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+
+		roundScore := letterCost[solution[line[2]][line[0]]]
+		roundScore += resultCost[line[2]]
+
+		score += roundScore
+	}
+
+	fmt.Println(score)
 
 	return nil
 }
