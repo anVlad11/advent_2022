@@ -39,6 +39,35 @@ func part1(file []string) error {
 		return nil
 	}
 
+	result := 0
+
+	for _, line := range file {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		pairRaw := strings.Split(line, ",")
+		pair := make([][]int64, len(pairRaw))
+		for i, s := range pairRaw {
+			pair[i] = []int64{}
+			values := strings.Split(s, "-")
+			for _, valueRaw := range values {
+				value, err := strconv.ParseInt(valueRaw, 10, 64)
+				if err != nil {
+					return err
+				}
+				pair[i] = append(pair[i], value)
+			}
+		}
+
+		if (pair[0][0] >= pair[1][0] && pair[0][1] <= pair[1][1]) ||
+			(pair[1][0] >= pair[0][0] && pair[1][1] <= pair[0][1]) {
+			result++
+		}
+	}
+
+	fmt.Println(result)
+
 	return nil
 }
 
@@ -68,8 +97,7 @@ func part2(file []string) error {
 			}
 		}
 
-		if (pair[0][0] >= pair[1][0] && pair[0][1] <= pair[1][1]) ||
-			(pair[1][0] >= pair[0][0] && pair[1][1] <= pair[0][1]) {
+		if (pair[0][0] <= pair[1][1]) && (pair[0][1] >= pair[1][0]) {
 			result++
 		}
 	}
